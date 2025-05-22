@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StudentManagement {
-    Map<Integer, ArrayList<String>> sampleRecord = new HashMap<>();
+    Map<Integer, ArrayList<String>> Record = new HashMap<>();
 
     public void populateRecord() {
         // Define arrays with student information
@@ -22,13 +22,14 @@ public class StudentManagement {
             studentInfo.add(classes[i]);  // Add class
             
             // Put the student info in the map with a student ID as the key
-            sampleRecord.put(i + 1, studentInfo);
+            Record.put(i + 1, studentInfo);
         }
     }
     public void displayRecords() {
+        System.out.println("******** Student Records ********");
         System.out.println("Student Name\tAge\tID\tclass");
         
-        for(Map.Entry<Integer, ArrayList<String>> entry : sampleRecord.entrySet()) {
+        for(Map.Entry<Integer, ArrayList<String>> entry : Record.entrySet()) {
             ArrayList<String> studentInfo = entry.getValue();
             String name = studentInfo.get(0);
             String age = studentInfo.get(1);
@@ -37,5 +38,60 @@ public class StudentManagement {
             
             System.out.println(name + "\t\t" + age + "\t" + id + "\t" + className);
         }
+    }
+
+    public boolean addStudent(ArrayList<String> studentInfo){
+        if (studentInfo == null || studentInfo.size() < 4) {
+            System.out.println("❌ Invalid Input");
+            return false;
+        }
+
+        for(Map.Entry<Integer, ArrayList<String>> entry: Record.entrySet()){
+            String studentID = entry.getValue().get(2);
+            if(studentID.equals(studentInfo.get(2))){
+                System.out.println("⚠️ Student ID already exists!");
+                return false;
+            }
+        }
+        
+        int newKey = Record.size() + 1;
+        Record.put(newKey, studentInfo);
+        return true;
+    }
+
+    public boolean deleteStudent(String deleteStudentID){
+        if (deleteStudentID == null){
+            System.out.println("❌ Invalid Input");
+            return false;
+        }
+
+        for(Map.Entry<Integer, ArrayList<String>> entry: Record.entrySet()){
+            String studentID = entry.getValue().get(2);
+            if(studentID.equals(deleteStudentID)){
+                Record.remove(entry.getKey());
+                return true;
+            }
+        }
+        System.out.println("⚠️ ID is not matched with any student");
+        return false;
+    }
+
+    public boolean updateStudent(String studentID, ArrayList<String> updatedEntry) {
+        if (studentID == null || updatedEntry == null || updatedEntry.size() < 4) {
+            System.out.println("❌ Invalid Input");
+            return false;
+        }
+
+        for (Map.Entry<Integer, ArrayList<String>> entry : Record.entrySet()) {
+            ArrayList<String> studentInfo = entry.getValue();
+            
+            if (studentID.equals(studentInfo.get(2))) {
+                Record.put(entry.getKey(), updatedEntry);
+                return true;
+            }
+        }
+        
+        System.out.println("⚠️ No student found with ID: " + studentID);
+        return false;
     }
 }
